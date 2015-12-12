@@ -9,9 +9,23 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController {
 
-
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if let graphController =  segue.destinationViewController as? GraphViewController
+        {
+            if let identifier = segue.identifier
+            {
+                if identifier == "graph"
+                {
+                    graphController
+                }
+            }
+            
+        }
+    }
+    
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
@@ -127,5 +141,6 @@ class ViewController: UIViewController {
             displayValue = 0
         }
     }
+    
 }
 

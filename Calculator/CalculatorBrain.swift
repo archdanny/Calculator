@@ -113,6 +113,7 @@ class CalculatorBrain
             if let currentStringCheck =  currentString
             {
                  currentString = newString + "," + currentStringCheck
+                
             }
         }
        
@@ -223,8 +224,5 @@ class CalculatorBrain
         }
         return (returnString, ops)
     }
-
-    
-    
-    
+ 
 }
