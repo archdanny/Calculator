@@ -27,7 +27,7 @@ class GraphViewController: UIViewController
     {
         super.viewDidAppear(animated)
         //graphView.axes.brain = brain
-        let evaluate = graphView.axes.brain?.evaluate()
+        let evaluate = graphView.axes.brain?.graphDisplay()
         label.text = evaluate?.description
     }
 

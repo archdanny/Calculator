@@ -118,6 +118,13 @@ class CalculatorBrain
         return (result, currentString)
     }
     
+    func graphDisplay() -> (result :Double?, description :String?)
+    {
+        let (result, _) = evaluate(opStack)
+        let currentString = descriptionString(opStack).resultString
+        return (result, currentString)
+    }
+    
     @nonobjc
     private func evaluate( ops : [Op]) ->(result :Double?, remainingOps :[Op])
     {
@@ -201,7 +208,7 @@ class CalculatorBrain
             case .Variable(let variable) :
                 if let value = variableValues[variable]
                 {
-                    returnString = returnString + "\(value)"
+                    returnString = returnString + "m"
                     return(returnString, remainingOps)
                 }
                 else
