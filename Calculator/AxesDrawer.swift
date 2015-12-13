@@ -14,7 +14,8 @@ class AxesDrawer
         static let HashmarkSize: CGFloat = 6
     }
     
-    var brain = CalculatorBrain()
+    var brain : CalculatorBrain?
+    
     var color = UIColor.blueColor()
     var minimumPointsPerHashmark: CGFloat = 40
     var contentScaleFactor: CGFloat = 1 // set this from UIView's contentScaleFactor to position axes with maximum accuracy
@@ -109,14 +110,15 @@ class AxesDrawer
             {
                 let label = formatter.stringFromNumber((origin.x-bbox.minX)/pointsPerUnit)!
                 
-                
-                let yMin = sin((origin.x-bbox.minX)/pointsPerUnit) * pointsPerHashmark
+
+                let yMin = CGFloat.init(doMath(Double(Float((origin.x-bbox.minX)/pointsPerUnit)))) * pointsPerHashmark
                 if let point = alignedPoint(x: bbox.minX, y: origin.y + yMin, insideBounds:bounds)
                 {
                     //pointsArray.append(point)
                     drawDot(point, origin: origin )
                 }
-                let yMax = sin((origin.x-bbox.maxX)/pointsPerUnit) * pointsPerHashmark
+                
+                let yMax = CGFloat.init(doMath(Double(Float((origin.x-bbox.maxX)/pointsPerUnit)))) * pointsPerHashmark
                 if let point = alignedPoint(x: bbox.maxX, y: origin.y + yMax, insideBounds:bounds)
                 {
                     //pointsArray.append(point)
@@ -156,14 +158,18 @@ class AxesDrawer
         }
     }
     
-    private func doMath ( value : Double)
+    private func doMath ( value : Double) -> Double
     {
-//        brain.pushOperand(value)
-//        let resultValue = brain.performOperation("sin")
-//        if let result = resultValue.result
-//        {
-//            displayValue = result
-//        }
+        brain?.setValueForM("m", value: value)
+        let resultValue = brain?.evaluate()
+        if let result = resultValue?.result
+        {
+            return result
+        }
+        else
+        {
+            return 0.0
+        }
     }
     private func drawDot(location : CGPoint, origin : CGPoint)
     {

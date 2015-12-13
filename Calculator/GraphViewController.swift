@@ -12,18 +12,24 @@ class GraphViewController: UIViewController
 {
     @IBOutlet weak var label: UILabel!
     
- 
+    var brain = CalculatorBrain?()
+    
     @IBOutlet weak var graphView: GraphView!
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        graphView.axes.brain = brain
         
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewDidAppear(animated: Bool)
     {
-        super.viewWillAppear(animated)
-
+        super.viewDidAppear(animated)
+        //graphView.axes.brain = brain
+        let evaluate = graphView.axes.brain?.evaluate()
+        label.text = evaluate?.description
     }
+
+    
 }

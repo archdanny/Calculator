@@ -19,7 +19,7 @@ class CalculatorViewController: UIViewController {
             {
                 if identifier == "graph"
                 {
-                    //graphController.graphView.axes.
+                    graphController.brain = brain
                 }
             }
             
