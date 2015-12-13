@@ -19,6 +19,7 @@ class CalculatorBrain
     private enum Op : CustomStringConvertible
     {
         case Operand(Double)
+        case Variable(String)
         case Unairyperation(String, Double -> Double)
         case binairyOperation(String, (Double, Double)->Double)
         
@@ -30,6 +31,8 @@ class CalculatorBrain
                 {
                 case .Operand( let operand) :
                     return "\(operand)"
+                case .Variable(let variable) :
+                    return variable
                 case .binairyOperation(let symbol, _):
                     return symbol
                 case .Unairyperation(let symbol, _):
@@ -37,12 +40,10 @@ class CalculatorBrain
 
                 }
             }
-            
         }
-
     }
     
-    
+
     init()
     {
         knownOps["×"] = Op.binairyOperation("×", *)
@@ -52,8 +53,6 @@ class CalculatorBrain
         knownOps["√"] = Op.Unairyperation("√",sqrt )
         knownOps["sin"] = Op.Unairyperation("sin",sin)
         knownOps["cos"] = Op.Unairyperation("cos",cos)
-        
-        variableValues = Dictionary<String,Double>()
     }
     
     
@@ -78,7 +77,6 @@ class CalculatorBrain
                     {
                        // newOpStack.append(.Operand()
                     }
-   
                 }
             }
         }
@@ -132,6 +130,9 @@ class CalculatorBrain
                 
             case .Operand(let operand) :
                 return(operand, remainingOps)
+            case .Variable(let variable) :
+                let value = variableValues[variable]
+                return (value, remainingOps)
                 
             case .Unairyperation(_, let operation) :
                 let operandEvalutation = evaluate(remainingOps)
@@ -165,12 +166,17 @@ class CalculatorBrain
     
     func pushOperand(symbol: String) -> Double?
     {
-        let returnValue = evaluate().result
-        variableValues.updateValue(returnValue!, forKey: symbol)
-        return returnValue
+        opStack.append(Op.Variable(symbol))
+        return evaluate().result
     }
     
-    var variableValues: Dictionary<String,Double>
+    var variableValues = [String :Double]()
+    
+    func setValueForM( M : String, value : Double)
+    {
+        
+        variableValues.updateValue(value, forKey: M)
+    }
     
     
     func descriptionString() -> String
@@ -192,6 +198,18 @@ class CalculatorBrain
             case .Operand(_) :
                 returnString = returnString + op.description
                 return(returnString, remainingOps)
+            case .Variable(let variable) :
+                if let value = variableValues[variable]
+                {
+                    returnString = returnString + "\(value)"
+                    return(returnString, remainingOps)
+                }
+                else
+                {
+                    returnString = returnString + "m"
+                    return(returnString, remainingOps)
+                }
+
                 
             case .Unairyperation(_,  _) :
                     

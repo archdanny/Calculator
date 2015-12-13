@@ -14,6 +14,7 @@ class AxesDrawer
         static let HashmarkSize: CGFloat = 6
     }
     
+    var brain = CalculatorBrain()
     var color = UIColor.blueColor()
     var minimumPointsPerHashmark: CGFloat = 40
     var contentScaleFactor: CGFloat = 1 // set this from UIView's contentScaleFactor to position axes with maximum accuracy
@@ -96,10 +97,34 @@ class AxesDrawer
             formatter.maximumFractionDigits = Int(-log10(Double(unitsPerHashmark)))
             formatter.minimumIntegerDigits = 1
 
+            //var pointsArray = [CGPoint]()
             // radiate the bbox out until the hashmarks are further out than the bounds
+
+            let yZero = sin((origin.x-0.0)/pointsPerUnit) * pointsPerHashmark
+            drawDot(CGPointMake(0.0, origin.y + yZero), origin: origin )
+            
+            
+            
             while !CGRectContainsRect(bbox, bounds)
             {
                 let label = formatter.stringFromNumber((origin.x-bbox.minX)/pointsPerUnit)!
+                
+                
+                let yMin = sin((origin.x-bbox.minX)/pointsPerUnit) * pointsPerHashmark
+                if let point = alignedPoint(x: bbox.minX, y: origin.y + yMin, insideBounds:bounds)
+                {
+                    //pointsArray.append(point)
+                    drawDot(point, origin: origin )
+                }
+                let yMax = sin((origin.x-bbox.maxX)/pointsPerUnit) * pointsPerHashmark
+                if let point = alignedPoint(x: bbox.maxX, y: origin.y + yMax, insideBounds:bounds)
+                {
+                    //pointsArray.append(point)
+                    drawDot(point, origin: origin)
+                }
+                
+                
+                
                 if let leftHashmarkPoint = alignedPoint(x: bbox.minX, y: origin.y, insideBounds:bounds) {
                     drawHashmarkAtLocation(leftHashmarkPoint, .Top("-\(label)"))
                 }
@@ -114,9 +139,45 @@ class AxesDrawer
                 }
                 bbox.insetInPlace(dx: -pointsPerHashmark, dy: -pointsPerHashmark)
             }
+//            pointsArray.sortInPlace { $0.x > $1.x }
+//            
+//            let sinePath = UIBezierPath()
+//
+//            sinePath.lineWidth = 1.0
+//            sinePath.moveToPoint(pointsArray.last!)
+//            for point in pointsArray
+//            {
+//               sinePath.addLineToPoint(point)
+//            }
+//            sinePath.stroke()
+            
+            //CGContextAddLines(UIGraphicsGetCurrentContext(), pointsArray, pointsArray.count)
+
         }
     }
     
+    private func doMath ( value : Double)
+    {
+//        brain.pushOperand(value)
+//        let resultValue = brain.performOperation("sin")
+//        if let result = resultValue.result
+//        {
+//            displayValue = result
+//        }
+    }
+    private func drawDot(location : CGPoint, origin : CGPoint)
+    {
+        let path = UIBezierPath()
+        path.moveToPoint(CGPoint(x: location.x, y: origin.y))
+        path.addLineToPoint(CGPoint(x: location.x, y: location.y))
+        path.stroke()
+
+        var rect = CGRect()
+        rect.size = CGSizeMake(2.0, 2.0)
+        rect.offsetInPlace(dx:  location.x, dy: location.y)
+        CGContextAddEllipseInRect(UIGraphicsGetCurrentContext(), rect)
+        CGContextFillPath(UIGraphicsGetCurrentContext())
+    }
     private func drawHashmarkAtLocation(location: CGPoint, _ text: AnchoredText)
     {
         var dx: CGFloat = 0, dy: CGFloat = 0

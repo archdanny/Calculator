@@ -19,7 +19,7 @@ class CalculatorViewController: UIViewController {
             {
                 if identifier == "graph"
                 {
-                    graphController
+                    //graphController.graphView.axes.
                 }
             }
             
@@ -116,6 +116,37 @@ class CalculatorViewController: UIViewController {
         }
     }
     
+    @IBAction func pushVariable(sender: UIButton)
+    {
+        enter()
+        let variable = sender.currentTitle!
+        if let result = brain.pushOperand(variable)
+        {
+            displayValue = result
+        }
+        else
+        {
+            //displayValue = 0
+        }
+        userIsTyping = false
+    }
+
+
+    @IBAction func pushMValue()
+    {
+        brain.setValueForM("m", value: displayValue)
+
+        let resultString = brain.evaluate()
+        
+        if let result = resultString.result
+        {
+            displayValue = result
+        }
+        if let text = resultString.description
+        {
+            descriptionLabel.text = text
+        }
+    }
     
     @IBAction func operate(sender: UIButton)
     {
@@ -126,16 +157,17 @@ class CalculatorViewController: UIViewController {
             enter()
         }
 
-
         let resultString = brain.performOperation(operation)
         
-        if let result = resultString.result {
+        if let result = resultString.result
+        {
             displayValue = result
-            if let text = resultString.description
-            {
-                descriptionLabel.text = text
-            }
         }
+        if let text = resultString.description
+        {
+            descriptionLabel.text = text
+        }
+
         else
         {
             displayValue = 0
